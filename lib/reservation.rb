@@ -1,20 +1,27 @@
 require 'date'
 class Reservation
   HOTEL_ROOM_COST_PER_NIGHT = 200
-  attr_reader :a_room, :start_date, :end_date
+  attr_reader :room_id, :start_date, :end_date
   # an array of room objects will be created - dates will be assigned here
 
-  def initialize(a_room,start_date,end_date)
-    @room = a_room
+  def initialize(room_id,start_date,end_date)
+    @room_id = room_id
     @start_date = start_date
     @end_date = end_date
+    # condition to ensure date range is a positive number.
+    if start_date > end_date
+      raise StandardError.new('Start date must start before end date.')
+    end
+
   end
 
+
   def cost
-    if @end_date - @start_date == 1
+    date_range = (@end_date - @start_date).to_i
+    if date_range.to_i == 1
       return HOTEL_ROOM_COST_PER_NIGHT
     else
-      cost_of_trip = (@end_date - @start_date - 1)*HOTEL_ROOM_COST_PER_NIGHT
+      cost_of_trip = (date_range.to_i - 1)*HOTEL_ROOM_COST_PER_NIGHT
 
       return cost_of_trip
     end
