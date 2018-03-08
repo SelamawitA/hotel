@@ -9,6 +9,12 @@ class Reservation
     @start_date = start_date
     @end_date = end_date
     # condition to ensure date range is a positive number.
+    if start_date.class != Date
+      raise StandardError.new('start date needs to be an instance of Date class.')
+    end
+    if end_date.class != Date
+      raise StandardError.new('end date needs to be an instance of Date class.')
+    end
     if start_date > end_date
       raise StandardError.new('Start date must start before end date.')
     end
