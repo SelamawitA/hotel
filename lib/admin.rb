@@ -9,25 +9,32 @@ MAX_AVAILABILITY = 20
   end
 
   def available_rooms(start_date,end_date)
+    #check method needing to be updated to include room id
     all_available_rooms = all_rooms
     all_reservations.each do |reservation|
-        if reservation.start_date == start_date && reservation.end_date == end_date
+      if (start_date+1).between?(reservation.start_date,reservation.end_date) || (end_date-1).between?(reservation.start_date,reservation.end_date)
            all_available_rooms.delete(reservation.room_id)
         end
     end
+
       return all_available_rooms
   end
 
-
   def reserve_room(reservation)
-    all_reservations.each do |a_res|
-      if a_res.start_date == reservation.start_date || a_res.end_date == reservation.end_date
-        raise StandardError.new('Room is booked during this period.')
-      end
+    current_available_rooms = available_rooms(reservation.start_date,reservation.end_date)
+    if current_available_rooms.detect {|room| room == reservation.room_id} == nil
+      raise StandardError.new("Room #{reservation.room_id} is booked during this period.")
     end
+      #(1..10).detect   { |i| i % 5 == 0 and i % 7 == 0 }   #=> nil
 
+    # all_reservations.each do |a_res|
+    #   if a_res.room_id == reservation.room_id && (reservation.start_date.between?(a_res.start_date,a_res.end_date) || reservation.end_date.between?(a_res.start_date,a_res.end_date))
+    #     raise StandardError.new("Room #{reservation.room_id}is booked during this period.")
+    #   end
+    # end
       @all_reservations << reservation
    end
+
 
    def look_up_reservation(date)
      searched_reservations = []
