@@ -21,6 +21,10 @@ MAX_AVAILABILITY = 20
   end
 
   def reserve_room(reservation)
+    if all_rooms.include?(reservation.room_id) == nil
+      raise StandardError.new("Room #{reservation.room_id} is outside of acceptable hotel room range. Input a hotel room with an ID 1-20.")
+    end
+
     current_available_rooms = available_rooms(reservation.start_date,reservation.end_date)
     if current_available_rooms.detect {|room| room == reservation.room_id} == nil
       raise StandardError.new("Room #{reservation.room_id} is booked during this period.")
