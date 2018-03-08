@@ -42,22 +42,6 @@ describe 'Admin class' do
     a_test.total_cost(a_test.all_reservations[0]).must_equal 200
   end
 
-  it 'will return all available rooms' do
-    start_date = Date.parse('2001-03-03')
-    end_date = Date.parse('2001-03-5')
-    second_start = Date.parse('2002-03-5')
-    second_end = Date.parse('2002-03-5')
-
-    a_test = Admin.new
-
-    a_reservation = Reservation.new(1,start_date,end_date)
-    a_test.reserve_room(a_reservation)
-
-    a_reservation = Reservation.new(2,second_start,second_end)
-    a_test.reserve_room(a_reservation)
-
-    a_test.available_rooms(start_date,end_date)
-  end
   # it 'will be my practice test' do
   #   a_test = Admin.new
   #   start_date = Date.parse('2001-02-03')
@@ -73,7 +57,24 @@ describe 'Admin class' do
   #
   # end
 
-  #nominal case
+### available ROOMS method ###
+
+it 'will return all available rooms' do
+  start_date = Date.parse('2001-03-03')
+  end_date = Date.parse('2001-03-5')
+  second_start = Date.parse('2002-03-5')
+  second_end = Date.parse('2002-03-5')
+
+  a_test = Admin.new
+
+  a_reservation = Reservation.new(1,start_date,end_date)
+  a_test.reserve_room(a_reservation)
+
+  a_reservation = Reservation.new(2,second_start,second_end)
+  a_test.reserve_room(a_reservation)
+
+  a_test.available_rooms(start_date,end_date)
+end
   it 'will return available rooms after a reservation' do
       a_test = Admin.new
       start_date = Date.parse('2001-02-03')
@@ -111,7 +112,6 @@ describe 'Admin class' do
 
   end
 
-
   it 'will return an empty array when all rooms are booked' do
       num_of_rooms = 20
       a_test = Admin.new
@@ -125,6 +125,81 @@ describe 'Admin class' do
 
       a_test.available_rooms(start_date,end_date).must_equal []
   end
+
+  # reserve_room tests ##
+  it 'can reserve a room' do
+    a_test = Admin.new
+    start_date = Date.parse('2001-02-03')
+    end_date = Date.parse('2001-02-15')
+
+    a_test.reserve_room(Reservation.new((4),start_date,end_date))
+    a_test.all_reservations[0].room_id.must_equal 4
+    a_test.all_reservations[0].start_date.must_equal start_date
+    a_test.all_reservations[0].end_date.must_equal end_date
+  end
+
+  it 'can reserve multiple rooms' do
+    a_test = Admin.new
+    start_date = Date.parse('2001-02-03')
+    end_date = Date.parse('2001-02-15')
+
+
+    a_test.reserve_room(Reservation.new(1,start_date,end_date))
+    a_test.reserve_room(Reservation.new(13,start_date,end_date))
+    a_test.reserve_room(Reservation.new(20,start_date,end_date))
+
+    a_test.all_reservations[0].room_id.must_equal 1
+    a_test.all_reservations[0].start_date.must_equal start_date
+    a_test.all_reservations[0].end_date.must_equal end_date
+
+    a_test.all_reservations[1].room_id.must_equal 13
+    a_test.all_reservations[1].start_date.must_equal start_date
+    a_test.all_reservations[1].end_date.must_equal end_date
+
+    a_test.all_reservations[2].room_id.must_equal 20
+    a_test.all_reservations[2].start_date.must_equal start_date
+    a_test.all_reservations[2].end_date.must_equal end_date
+
+    a_test.all_reservations.length.must_equal 3
+  end
+
+  it 'will raise an error if the date range of a reservation is not available' do
+    a_test = Admin.new
+    start_date = Date.parse('2001-02-03')
+    end_date = Date.parse('2001-02-15')
+    a_res = Reservation.new(1,start_date,end_date)
+
+    a_test.reserve_room(a_res)
+    proc{a_test.reserve_room(a_res)}.must_raise StandardError
+  end
+
+  it 'will allow an admin to reserve a room on a reserved end date' do
+    a_test = Admin.new
+    start_date = Date.parse('2001-02-03')
+    end_date = Date.parse('2001-02-15')
+    second_end = Date.parse('2001-03-15')
+    a_res = Reservation.new(1,start_date,end_date)
+    second_res = Reservation.new(1,end_date,second_end)
+
+    a_test.reserve_room(a_res)
+    a_test.reserve_room(second_res)
+  end
+
+  it 'will allow an admin to reserve a room if the reserverd end date is on a booked start date of the same room' do
+    a_test = Admin.new
+    start_date = Date.parse('2001-02-03')
+    end_date = Date.parse('2001-02-15')
+
+    second_start = Date.parse('2001-01-01')
+    second_end = start_date
+    a_res = Reservation.new(15,start_date,end_date)
+    second_res = Reservation.new(15,second_start,second_end)
+
+    a_test.reserve_room(a_res)
+    a_test.reserve_room(second_res)
+  end
+
+
 
 
 end
