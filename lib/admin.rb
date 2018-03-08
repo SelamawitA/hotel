@@ -8,6 +8,16 @@ MAX_AVAILABILITY = 20
     @all_reservations = []
   end
 
+  def available_rooms(start_date,end_date)
+    all_available_rooms = all_rooms
+    all_reservations.each do |reservation|
+        if reservation.start_date == start_date && reservation.end_date == end_date
+           all_available_rooms.delete(reservation.room_id)
+        end
+    end
+      return all_available_rooms
+  end
+
 
   def reserve_room(reservation)
     all_reservations.each do |a_res|
