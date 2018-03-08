@@ -17,9 +17,26 @@ MAX_AVAILABILITY = 20
     end
 
       @all_reservations << reservation
-
    end
 
+   def look_up_reservation(date)
+     searched_reservations = []
+     @all_reservations.each do |a_reservation|
+       if date.between?(a_reservation.start_date, a_reservation.end_date)
+         searched_reservations << a_reservation
+       end
+     end
+     return searched_reservations
+     end
+
+   def total_cost(reservation)
+     #update input to be room id?
+     @all_reservations.each do |a_reservation|
+       if a_reservation.start_date == reservation.start_date && a_reservation.end_date == reservation.end_date
+         return a_reservation.cost
+       end
+     end
+   end
 
 
 end
