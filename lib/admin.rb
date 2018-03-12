@@ -9,14 +9,12 @@ MAX_AVAILABILITY = 20
   end
 
   def available_rooms(start_date,end_date)
-    #check method needing to be updated to include room id
     all_available_rooms = all_rooms
     all_reservations.each do |reservation|
       if (start_date+1).between?(reservation.start_date,reservation.end_date) || (end_date-1).between?(reservation.start_date,reservation.end_date)
            all_available_rooms.delete(reservation.room_id)
         end
     end
-
       return all_available_rooms
   end
 
@@ -29,13 +27,6 @@ MAX_AVAILABILITY = 20
     if current_available_rooms.detect {|room| room == reservation.room_id} == nil
       raise StandardError.new("Room #{reservation.room_id} is booked during this period.")
     end
-      #(1..10).detect   { |i| i % 5 == 0 and i % 7 == 0 }   #=> nil
-
-    # all_reservations.each do |a_res|
-    #   if a_res.room_id == reservation.room_id && (reservation.start_date.between?(a_res.start_date,a_res.end_date) || reservation.end_date.between?(a_res.start_date,a_res.end_date))
-    #     raise StandardError.new("Room #{reservation.room_id}is booked during this period.")
-    #   end
-    # end
       @all_reservations << reservation
    end
 
@@ -51,7 +42,6 @@ MAX_AVAILABILITY = 20
      end
 
    def total_cost(reservation)
-     #update input to be room id?
      @all_reservations.each do |a_reservation|
        if a_reservation.start_date == reservation.start_date && a_reservation.end_date == reservation.end_date
          return a_reservation.cost
